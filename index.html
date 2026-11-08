@@ -128,13 +128,24 @@
       color: var(--text);
     }
 
+    @keyframes railPulse {
+      0%, 100% {
+        transform: scale(1.06);
+        box-shadow: 0 0 8px rgba(15, 118, 110, 0.45);
+      }
+      50% {
+        transform: scale(1.12);
+        box-shadow: 0 0 16px rgba(15, 118, 110, 0.75);
+      }
+    }
+
     .cp-node.active-rail {
       background: var(--accent);
       color: #ffffff;
       font-weight: 700;
       border-color: var(--accent);
       box-shadow: 0 0 10px rgba(15, 118, 110, 0.45);
-      transform: scale(1.06);
+      animation: railPulse 2s infinite ease-in-out;
     }
 
     .cp-node.completed-rail {
@@ -211,7 +222,25 @@
       line-height: 1;
     }
 
-    .cp-timer-panel.warn .timer-display { color: var(--warn); }
+    @keyframes timerWarnPulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.75; transform: scale(1.06); }
+    }
+
+    @keyframes timerShake {
+      0%, 100% { transform: translateX(0); }
+      20%, 60% { transform: translateX(-2.5px); }
+      40%, 80% { transform: translateX(2.5px); }
+    }
+
+    .cp-timer-panel.warn .timer-display {
+      color: var(--warn);
+      animation: timerWarnPulse 1.2s infinite ease-in-out;
+    }
+    .cp-timer-panel.overtime {
+      animation: timerShake 2s infinite ease-in-out;
+      border-color: #fca5a5;
+    }
     .cp-timer-panel.overtime .timer-display {
       color: var(--danger);
       animation: timerPulse 1.2s infinite ease-in-out;
@@ -267,6 +296,28 @@
     }
 
     /* Individual Slide */
+    @keyframes slideCardEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(12px) scale(0.985);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes slideHeaderEntrance {
+      0% {
+        opacity: 0;
+        transform: translateY(-8px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
     .slide {
       position: absolute;
       inset: 0;
@@ -277,9 +328,9 @@
       opacity: 0;
       visibility: hidden;
       transform: translateY(16px) scale(0.995);
-      transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                  transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
-                  visibility 0.35s;
+      transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.4s cubic-bezier(0.16, 1, 0.3, 1),
+                  visibility 0.4s;
       pointer-events: none;
       max-width: 1380px;
       margin: 0 auto;
@@ -293,6 +344,85 @@
       transform: translateY(0) scale(1);
       pointer-events: auto;
     }
+
+    .slide.active .slide-subtitle {
+      animation: slideHeaderEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.05s;
+    }
+
+    .slide.active .slide-title {
+      animation: slideHeaderEntrance 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.09s;
+    }
+
+    .slide.active .cp-meta-bar {
+      animation: slideHeaderEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.11s;
+    }
+
+    .slide.active .cp-meta-bar .badge-pill:nth-child(1) {
+      animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.13s;
+    }
+    .slide.active .cp-meta-bar .badge-pill:nth-child(2) {
+      animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.17s;
+    }
+    .slide.active .cp-meta-bar .badge-pill:nth-child(3) {
+      animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.21s;
+    }
+    .slide.active .cp-meta-bar .badge-pill:nth-child(4) {
+      animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.25s;
+    }
+    .slide.active .cp-meta-bar .badge-pill:nth-child(5) {
+      animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.29s;
+    }
+
+    .slide.active .slide-card:nth-child(1) {
+      animation: slideCardEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.14s;
+    }
+
+    .slide.active .slide-card:nth-child(2) {
+      animation: slideCardEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.20s;
+    }
+
+    .slide.active .slide-card:nth-child(3) {
+      animation: slideCardEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.26s;
+    }
+
+    .slide.active .slide-card:nth-child(4) {
+      animation: slideCardEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.32s;
+    }
+
+    .slide.active .slide-card:nth-child(5) {
+      animation: slideCardEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.38s;
+    }
+
+    .slide.active .slide-card:nth-child(6) {
+      animation: slideCardEntrance 0.38s cubic-bezier(0.16, 1, 0.3, 1) both;
+      animation-delay: 0.44s;
+    }
+
+    .slide.active tbody tr:nth-child(1) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.12s; }
+    .slide.active tbody tr:nth-child(2) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.16s; }
+    .slide.active tbody tr:nth-child(3) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.20s; }
+    .slide.active tbody tr:nth-child(4) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.24s; }
+    .slide.active tbody tr:nth-child(5) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.28s; }
+    .slide.active tbody tr:nth-child(6) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.32s; }
+    .slide.active tbody tr:nth-child(7) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.36s; }
+    .slide.active tbody tr:nth-child(8) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.40s; }
+    .slide.active tbody tr:nth-child(9) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.44s; }
+    .slide.active tbody tr:nth-child(10) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.48s; }
+    .slide.active tbody tr:nth-child(11) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.52s; }
+    .slide.active tbody tr:nth-child(12) { animation: slideCardEntrance 0.35s cubic-bezier(0.16, 1, 0.3, 1) both; animation-delay: 0.56s; }
 
     /* Typography & Hierarchy */
     h1, h2, h3, h4 {
@@ -582,8 +712,8 @@
 
     .dot.active {
       background: var(--accent);
-      transform: scale(1.3);
-      box-shadow: 0 0 6px rgba(15, 118, 110, 0.5);
+      transform: scale(1.35);
+      box-shadow: 0 0 8px rgba(15, 118, 110, 0.6);
     }
 
     .nav-buttons {
@@ -679,6 +809,17 @@
     .notes-content li { margin-bottom: 0.25rem; }
 
     /* CTA Button on final slide */
+    @keyframes ctaBreathe {
+      0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 4px 14px rgba(15, 118, 110, 0.35);
+      }
+      50% {
+        transform: scale(1.035);
+        box-shadow: 0 8px 24px rgba(15, 118, 110, 0.6);
+      }
+    }
+
     .btn-kickoff {
       background: var(--accent);
       color: #ffffff;
@@ -693,12 +834,14 @@
       display: inline-flex;
       align-items: center;
       gap: 0.55rem;
+      animation: ctaBreathe 2.4s ease-in-out infinite;
     }
 
     .btn-kickoff:hover {
+      animation: none;
       background: #115e59;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(15, 118, 110, 0.45);
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 8px 24px rgba(15, 118, 110, 0.55);
     }
 
     /* Accessibility / reduced motion */
@@ -713,6 +856,20 @@
         transform: none !important;
       }
       .slide.active {
+        transform: none !important;
+      }
+      .slide.active .slide-subtitle,
+      .slide.active .slide-title,
+      .slide.active .cp-meta-bar,
+      .slide.active .badge-pill,
+      .slide.active .slide-card,
+      .slide.active tbody tr,
+      .cp-node.active-rail,
+      .cp-timer-panel.warn .timer-display,
+      .cp-timer-panel.overtime,
+      .btn-kickoff,
+      .dot.active {
+        animation: none !important;
         transform: none !important;
       }
       .cp-node {
@@ -760,8 +917,11 @@
 
     <!-- Utilities / Sound / Notes / Fullscreen -->
     <div class="header-actions">
-      <button class="btn-icon" id="btn-sound-toggle" onclick="toggleMute()" title="Bật/Tắt âm thanh (Phím M)">
-        <span id="sound-icon">🔇</span> Mute
+      <button class="btn-icon" id="btn-sound-toggle" onclick="toggleMute()" title="Bật/Tắt hiệu ứng âm thanh (Phím M)">
+        <span id="sound-icon">🔇</span> SFX
+      </button>
+      <button class="btn-icon" id="btn-music-toggle" onclick="toggleMusic()" title="Bật/Tắt nhạc nền Ambient (Phím B)">
+        <span id="music-icon">🎵</span> Nhạc
       </button>
       <button class="btn-icon" id="btn-notes-toggle" onclick="toggleSpeakerNotes()" title="Ghi chú giảng viên (Phím N)">
         📝 Notes
@@ -2024,6 +2184,8 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
     const notesContent = document.getElementById("notes-content");
     const soundToggleBtn = document.getElementById("btn-sound-toggle");
     const soundIconEl = document.getElementById("sound-icon");
+    const musicToggleBtn = document.getElementById("btn-music-toggle");
+    const musicIconEl = document.getElementById("music-icon");
 
     // Audio State (Default Muted as per plan)
     let isMuted = true;
@@ -2037,20 +2199,37 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
     }
     let audioCtx = null;
 
+    function ensureAudio() {
+      try {
+        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
+        if (!AudioCtxClass) return null;
+        if (!audioCtx) audioCtx = new AudioCtxClass();
+        if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+        }
+        return audioCtx;
+      } catch (e) {
+        console.warn("Audio Context init warning:", e);
+        return null;
+      }
+    }
+
     function updateSoundUI() {
+      if (!soundToggleBtn || !soundIconEl) return;
       if (isMuted) {
         soundIconEl.textContent = "🔇";
         soundToggleBtn.classList.remove("active");
-        soundToggleBtn.title = "Bật âm thanh chuyển slide (Phím M)";
+        soundToggleBtn.title = "Bật hiệu ứng âm thanh (Phím M)";
       } else {
         soundIconEl.textContent = "🔊";
         soundToggleBtn.classList.add("active");
-        soundToggleBtn.title = "Tắt âm thanh chuyển slide (Phím M)";
+        soundToggleBtn.title = "Tắt hiệu ứng âm thanh (Phím M)";
       }
     }
     updateSoundUI();
 
     function toggleMute() {
+      ensureAudio();
       isMuted = !isMuted;
       try {
         localStorage.setItem("deck_sound_muted", isMuted ? "true" : "false");
@@ -2063,37 +2242,344 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
       }
     }
 
-    function playSlideWhoosh() {
+    // SFX Engine
+    function playSfx(type) {
       if (isMuted) return;
       if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const ctx = ensureAudio();
+      if (!ctx) return;
+
+      const now = ctx.currentTime;
       try {
-        const AudioCtxClass = window.AudioContext || window.webkitAudioContext;
-        if (!AudioCtxClass) return;
-        if (!audioCtx) audioCtx = new AudioCtxClass();
-        if (audioCtx.state === 'suspended') {
-          audioCtx.resume();
+        switch (type) {
+          case 'whoosh': {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(260, now);
+            osc.frequency.exponentialRampToValueAtTime(540, now + 0.04);
+            osc.frequency.exponentialRampToValueAtTime(200, now + 0.14);
+
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.08, now + 0.02);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
+
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.15);
+            break;
+          }
+          case 'chime': {
+            [523.25, 783.99].forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              const startTime = now + idx * 0.09;
+              osc.type = "triangle";
+              osc.frequency.setValueAtTime(freq, startTime);
+              gain.gain.setValueAtTime(0.001, startTime);
+              gain.gain.linearRampToValueAtTime(0.06, startTime + 0.02);
+              gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.35);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(startTime);
+              osc.stop(startTime + 0.36);
+            });
+            break;
+          }
+          case 'warn': {
+            [660, 660].forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              const startTime = now + idx * 0.12;
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(freq, startTime);
+              gain.gain.setValueAtTime(0.001, startTime);
+              gain.gain.linearRampToValueAtTime(0.045, startTime + 0.015);
+              gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.1);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(startTime);
+              osc.stop(startTime + 0.11);
+            });
+            break;
+          }
+          case 'alarm': {
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              const startTime = now + idx * 0.1;
+              osc.type = "sine";
+              osc.frequency.setValueAtTime(freq, startTime);
+              gain.gain.setValueAtTime(0.001, startTime);
+              gain.gain.linearRampToValueAtTime(0.07, startTime + 0.02);
+              gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.55);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(startTime);
+              osc.stop(startTime + 0.56);
+            });
+            break;
+          }
+          case 'kickoff': {
+            [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              const startTime = now + idx * 0.06;
+              osc.type = "triangle";
+              osc.frequency.setValueAtTime(freq, startTime);
+              gain.gain.setValueAtTime(0.001, startTime);
+              gain.gain.linearRampToValueAtTime(0.08, startTime + 0.015);
+              gain.gain.exponentialRampToValueAtTime(0.001, startTime + 0.4);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(startTime);
+              osc.stop(startTime + 0.42);
+            });
+            break;
+          }
+          case 'tick': {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = "sine";
+            osc.frequency.setValueAtTime(880, now);
+            osc.frequency.exponentialRampToValueAtTime(440, now + 0.03);
+            gain.gain.setValueAtTime(0.001, now);
+            gain.gain.linearRampToValueAtTime(0.05, now + 0.005);
+            gain.gain.exponentialRampToValueAtTime(0.001, now + 0.035);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 0.04);
+            break;
+          }
         }
-        const now = audioCtx.currentTime;
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = "sine";
-        osc.frequency.setValueAtTime(280, now);
-        osc.frequency.exponentialRampToValueAtTime(520, now + 0.04);
-        osc.frequency.exponentialRampToValueAtTime(220, now + 0.12);
-
-        gain.gain.setValueAtTime(0.001, now);
-        gain.gain.linearRampToValueAtTime(0.08, now + 0.02);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-
-        osc.start(now);
-        osc.stop(now + 0.13);
       } catch (err) {
-        console.warn("Audio Context notice:", err);
+        console.warn("SFX error:", err);
       }
+    }
+
+    function playSlideWhoosh() {
+      playSfx('whoosh');
+    }
+
+    // Ambient Music Synth Engine (engage bed)
+    let isMusicPlaying = false;
+    let ambientSynth = {
+      masterGain: null,
+      filter: null,
+      lfo: null,
+      lfoGain: null,
+      oscillators: [],
+      stepTimer: null,
+      fadeCleanupTimer: null,
+      generationId: 0,
+      notes: [293.66, 329.63, 369.99, 440.00, 493.88, 587.33, 659.25]
+    };
+
+    function updateMusicUI() {
+      if (!musicToggleBtn || !musicIconEl) return;
+      if (isMusicPlaying) {
+        musicIconEl.textContent = "🎶";
+        musicToggleBtn.classList.add("active");
+        musicToggleBtn.title = "Tắt nhạc nền Ambient (Phím B)";
+      } else {
+        musicIconEl.textContent = "🎵";
+        musicToggleBtn.classList.remove("active");
+        musicToggleBtn.title = "Bật nhạc nền Ambient (Phím B)";
+      }
+    }
+    updateMusicUI();
+
+    function scheduleNextMusicNote() {
+      if (!isMusicPlaying || !ambientSynth.masterGain || document.hidden) return;
+      const currentGen = ambientSynth.generationId;
+      try {
+        const ctx = audioCtx;
+        if (!ctx) return;
+        const noteTime = ctx.currentTime;
+        const noteOsc = ctx.createOscillator();
+        const noteGain = ctx.createGain();
+        const noteFilter = ctx.createBiquadFilter();
+
+        const noteFreq = ambientSynth.notes[Math.floor(Math.random() * ambientSynth.notes.length)];
+        noteOsc.type = "sine";
+        noteOsc.frequency.setValueAtTime(noteFreq, noteTime);
+
+        noteFilter.type = "lowpass";
+        noteFilter.frequency.setValueAtTime(600, noteTime);
+
+        noteGain.gain.setValueAtTime(0.0001, noteTime);
+        noteGain.gain.linearRampToValueAtTime(0.022, noteTime + 0.1);
+        noteGain.gain.exponentialRampToValueAtTime(0.0001, noteTime + 2.2);
+
+        noteOsc.connect(noteFilter);
+        noteFilter.connect(noteGain);
+        noteGain.connect(ambientSynth.masterGain);
+
+        noteOsc.start(noteTime);
+        noteOsc.stop(noteTime + 2.3);
+      } catch (e) {}
+      const delay = 1800 + Math.random() * 1200;
+      ambientSynth.stepTimer = setTimeout(() => {
+        if (ambientSynth.generationId === currentGen && isMusicPlaying && !document.hidden) {
+          scheduleNextMusicNote();
+        }
+      }, delay);
+    }
+
+    function startMusic() {
+      if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const ctx = ensureAudio();
+      if (!ctx) return;
+
+      // Cancel any pending fade cleanup
+      if (ambientSynth.fadeCleanupTimer) {
+        clearTimeout(ambientSynth.fadeCleanupTimer);
+        ambientSynth.fadeCleanupTimer = null;
+      }
+
+      isMusicPlaying = true;
+      updateMusicUI();
+
+      // If resuming during fade-out
+      if (ambientSynth.masterGain) {
+        const now = ctx.currentTime;
+        ambientSynth.masterGain.gain.cancelScheduledValues(now);
+        ambientSynth.masterGain.gain.setValueAtTime(ambientSynth.masterGain.gain.value, now);
+        ambientSynth.masterGain.gain.linearRampToValueAtTime(0.04, now + 0.8);
+        if (ambientSynth.stepTimer === null && !document.hidden) {
+          scheduleNextMusicNote();
+        }
+        return;
+      }
+
+      ambientSynth.generationId++;
+      const currentGen = ambientSynth.generationId;
+
+      const now = ctx.currentTime;
+      const master = ctx.createGain();
+      master.gain.setValueAtTime(0.0001, now);
+      master.gain.linearRampToValueAtTime(0.04, now + 0.8);
+      master.connect(ctx.destination);
+      ambientSynth.masterGain = master;
+
+      const filter = ctx.createBiquadFilter();
+      filter.type = "lowpass";
+      filter.frequency.setValueAtTime(380, now);
+      filter.Q.setValueAtTime(1.2, now);
+      filter.connect(master);
+      ambientSynth.filter = filter;
+
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      lfo.type = "sine";
+      lfo.frequency.setValueAtTime(0.08, now);
+      lfoGain.gain.setValueAtTime(120, now);
+      lfo.connect(lfoGain);
+      lfoGain.connect(filter.frequency);
+      lfo.start(now);
+      ambientSynth.lfo = lfo;
+      ambientSynth.lfoGain = lfoGain;
+
+      const freqs = [146.83, 220.00];
+      ambientSynth.oscillators = [];
+      freqs.forEach(f => {
+        const osc = ctx.createOscillator();
+        const oscGain = ctx.createGain();
+        osc.type = "triangle";
+        osc.frequency.setValueAtTime(f, now);
+        oscGain.gain.setValueAtTime(0.35, now);
+        osc.connect(oscGain);
+        oscGain.connect(filter);
+        osc.start(now);
+        ambientSynth.oscillators.push(osc);
+      });
+
+      if (!document.hidden) {
+        scheduleNextMusicNote();
+      }
+    }
+
+    function stopMusic() {
+      if (!isMusicPlaying && !ambientSynth.masterGain) return;
+      isMusicPlaying = false;
+      updateMusicUI();
+
+      if (ambientSynth.stepTimer) {
+        clearTimeout(ambientSynth.stepTimer);
+        ambientSynth.stepTimer = null;
+      }
+
+      if (ambientSynth.fadeCleanupTimer) {
+        clearTimeout(ambientSynth.fadeCleanupTimer);
+        ambientSynth.fadeCleanupTimer = null;
+      }
+
+      if (audioCtx && ambientSynth.masterGain) {
+        const now = audioCtx.currentTime;
+        ambientSynth.masterGain.gain.cancelScheduledValues(now);
+        ambientSynth.masterGain.gain.setValueAtTime(ambientSynth.masterGain.gain.value, now);
+        ambientSynth.masterGain.gain.linearRampToValueAtTime(0.0001, now + 0.8);
+
+        const currentGen = ambientSynth.generationId;
+        ambientSynth.fadeCleanupTimer = setTimeout(() => {
+          if (!isMusicPlaying && ambientSynth.generationId === currentGen && ambientSynth.masterGain) {
+            try {
+              ambientSynth.oscillators.forEach(osc => osc.stop());
+              if (ambientSynth.lfo) ambientSynth.lfo.stop();
+            } catch (e) {}
+            ambientSynth.oscillators = [];
+            ambientSynth.lfo = null;
+            ambientSynth.lfoGain = null;
+            ambientSynth.filter = null;
+            ambientSynth.masterGain = null;
+          }
+          ambientSynth.fadeCleanupTimer = null;
+        }, 850);
+      }
+    }
+
+    function toggleMusic() {
+      if (isMusicPlaying) {
+        stopMusic();
+      } else {
+        startMusic();
+      }
+    }
+
+    document.addEventListener("visibilitychange", () => {
+      if (!audioCtx || !ambientSynth.masterGain) return;
+      const now = audioCtx.currentTime;
+      if (document.hidden) {
+        if (ambientSynth.stepTimer) {
+          clearTimeout(ambientSynth.stepTimer);
+          ambientSynth.stepTimer = null;
+        }
+        if (isMusicPlaying) {
+          ambientSynth.masterGain.gain.cancelScheduledValues(now);
+          ambientSynth.masterGain.gain.setValueAtTime(ambientSynth.masterGain.gain.value, now);
+          ambientSynth.masterGain.gain.linearRampToValueAtTime(0.0001, now + 0.5);
+        }
+      } else {
+        if (isMusicPlaying) {
+          ambientSynth.masterGain.gain.cancelScheduledValues(now);
+          ambientSynth.masterGain.gain.setValueAtTime(ambientSynth.masterGain.gain.value, now);
+          ambientSynth.masterGain.gain.linearRampToValueAtTime(0.04, now + 0.6);
+          if (ambientSynth.stepTimer === null) {
+            scheduleNextMusicNote();
+          }
+        }
+      }
+    });
+
+    if (window.matchMedia) {
+      const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+      motionQuery.addEventListener('change', (e) => {
+        if (e.matches && isMusicPlaying) {
+          stopMusic();
+        }
+      });
     }
 
     // Timer State
@@ -2137,6 +2623,13 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
     function tick() {
       timerState.remainSec--;
       renderTimer();
+      if (timerState.remainSec === 120) {
+        playSfx('warn');
+      } else if (timerState.remainSec <= 90 && timerState.remainSec > 0 && timerState.remainSec % 30 === 0) {
+        playSfx('tick');
+      } else if (timerState.remainSec === 0) {
+        playSfx('alarm');
+      }
     }
 
     function startCpTimer(cp, minutes, label) {
@@ -2151,6 +2644,7 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
       timerState.running = true;
       timerState.intervalId = setInterval(tick, 1000);
       renderTimer();
+      playSfx('chime');
     }
 
     function pauseTimer(isNav) {
@@ -2195,7 +2689,10 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
       const dot = document.createElement("div");
       dot.className = "dot" + (idx === 0 ? " active" : "");
       dot.title = "Tới slide " + (idx + 1);
-      dot.addEventListener("click", () => goToSlide(idx));
+      dot.addEventListener("click", () => {
+        playSfx('tick');
+        goToSlide(idx);
+      });
       dotsContainer.appendChild(dot);
     });
     const dots = Array.from(dotsContainer.querySelectorAll(".dot"));
@@ -2315,6 +2812,7 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
     }
 
     function goToCP(cpNum) {
+      playSfx('tick');
       const targetIdx = slides.findIndex(s => s.getAttribute("data-active-cp") === String(cpNum));
       if (targetIdx !== -1) {
         show(targetIdx);
@@ -2322,6 +2820,7 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
     }
 
     function kickoffLab() {
+      playSfx('kickoff');
       const targetIdx = slides.findIndex(s => s.getAttribute("data-active-cp") === "0");
       const idx = targetIdx !== -1 ? targetIdx : 6;
       timerState.cp = null;
@@ -2374,6 +2873,11 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
         case "R":
           e.preventDefault();
           resetTimer();
+          break;
+        case "b":
+        case "B":
+          e.preventDefault();
+          toggleMusic();
           break;
         case "m":
         case "M":

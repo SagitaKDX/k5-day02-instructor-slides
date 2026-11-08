@@ -61,7 +61,8 @@ Deck gồm đúng 18 slide tương ứng với 4 giai đoạn:
 | **Timer Panel** | Đồng hồ đếm ngược tự động nhận diện và nạp số phút của slide CP hiện tại |
 | `P` | Tạm dừng (Pause) hoặc Tiếp tục (Resume) đồng hồ |
 | `R` | Đặt lại (Reset) đồng hồ về đúng số phút của Checkpoint hiện tại |
-| `M` | Bật / Tắt âm thanh chuyển slide (**Mặc định: TẮT** - Muted) |
+| `M` | Bật / Tắt hiệu ứng âm thanh SFX (**Mặc định: TẮT** - Muted) |
+| `B` | Bật / Tắt nhạc nền Ambient synth loop (**Mặc định: TẮT** - Off) |
 | `N` | Bật / Tắt ngăn kéo Ghi chú Giảng viên (**Speaker Notes Drawer**) |
 | `F` | Bật / Tắt chế độ toàn màn hình (Fullscreen) |
 | **Touch Swipe** | Vuốt sang trái (slide tiếp) hoặc vuốt sang phải (slide trước) trên tablet / màn hình cảm ứng |
@@ -71,6 +72,9 @@ Deck gồm đúng 18 slide tương ứng với 4 giai đoạn:
 ## Tính năng nâng cao dành cho Giảng viên
 
 1. **Typography tiếng Việt chuẩn xác:** Sử dụng font *Be Vietnam Pro* và *JetBrains Mono*, hiển thị sắc nét toàn bộ dấu thanh tiếng Việt trên màn hình máy chiếu độ phân giải cao.
-2. **Âm thanh Web Audio Synth:** Tạo hiệu ứng whoosh nhẹ nhàng bằng Web Audio API thuần (không phụ thuộc file âm thanh bên ngoài). Trạng thái bật/tắt được lưu vào `localStorage`.
-3. **Giảm chuyển động (Accessibility):** Tự động tôn trọng cấu hình `prefers-reduced-motion: reduce` của hệ thống để triệt tiêu hiệu ứng chuyển động và âm thanh khi cần thiết.
-4. **Speaker Notes tích hợp:** Mỗi slide đều có phần ghi chú giảng viên tương ứng, nhắc nhở về pacing, lưu ý sư phạm, anti-pattern và câu hỏi vấn đáp cho sinh viên.
+2. **Hiệu ứng âm thanh & Nhạc nền Web Audio Synth (Không phụ thuộc file ngoài):**
+   - **SFX suite (Phím M):** Chuyển slide (whoosh), khởi động timer (ascending chime), cảnh báo sắp hết giờ <= 120s (warn blip), hết giờ (alarm triad), nút kickoff (confirm chime), nhảy rail CP (tick).
+   - **Nhạc nền Ambient bed (Phím B):** Tạo âm nền êm dịu cho lớp học qua oscillator synth + bộ lọc lowpass LFO và chuỗi nốt ngũ cung ngẫu nhiên. Fade in/out 0.8s, tự động dừng khi ẩn tab (`visibilitychange`) hoặc khi bật reduced motion.
+3. **Hiệu ứng chuyển động có chủ đích (Intentional Motion):** Cascade stagger cho tiêu đề và các thẻ nội dung (.slide-card, bảng biểu), hiệu ứng thở (breathing) cho nút Kickoff CTA, pulsing glow cho mốc CP đang diễn ra trên rail, cùng nhịp rung cảnh báo cho đồng hồ khi quá giờ.
+4. **Giảm chuyển động (Accessibility):** Tự động tôn trọng cấu hình `prefers-reduced-motion: reduce` của hệ thống để triệt tiêu hiệu ứng chuyển động và tắt toàn bộ âm thanh khi cần thiết.
+5. **Speaker Notes tích hợp:** Mỗi slide đều có phần ghi chú giảng viên tương ứng, nhắc nhở về pacing, lưu ý sư phạm, anti-pattern và câu hỏi vấn đáp cho sinh viên.
