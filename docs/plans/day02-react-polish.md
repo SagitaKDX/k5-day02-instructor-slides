@@ -60,7 +60,18 @@ Take the existing **Vite + React** instructor deck under `app/` and make it **pr
 6. Optionally strip buddy blocks from legacy root `index.html`.
 
 ```files
+app/src/*
 app/src/**/*
+app/src/App.tsx
+app/src/main.tsx
+app/src/audio/*
+app/src/audio/**/*
+app/src/components/*
+app/src/components/**/*
+app/src/styles/*
+app/src/styles/**/*
+app/src/slides/*
+app/src/slides/**/*
 app/package.json
 app/package-lock.json
 app/vite.config.ts
