@@ -6,8 +6,17 @@ import {
   useState,
   type CSSProperties,
 } from 'react'
-import { BuddyScene } from './components/BuddyScene'
 import rawSlides from './slides/content.json'
+import {
+  isSfxMuted,
+  loadPrefs,
+  onVisibilityChange,
+  playSfx,
+  setReducedMotion,
+  setSfxMuted,
+  startMusic,
+  stopMusic,
+} from './audio/engine'
 
 type SlideData = {
   index: number
@@ -46,15 +55,9 @@ function usePrefersReducedMotion() {
 export default function App() {
   const [index, setIndex] = useState(0)
   const [notesOpen, setNotesOpen] = useState(false)
-  const [buddiesOn, setBuddiesOn] = useState(() => {
-    try {
-      return localStorage.getItem('deck_buddies_off') !== 'true'
-    } catch {
-      return true
-    }
-  })
-  const [pointer, setPointer] = useState({ x: 0, y: 0 })
-  const [spot, setSpot] = useState({ x: '50%', y: '40%' })
+  const [sfxOn, setSfxOn] = useState(false)
+  const [musicOn, setMusicOn] = useState(false)
+  const [spot, setSpot] = useState({ x: '50%', y: '42%' })
   const [remainSec, setRemainSec] = useState(0)
   const [timerRunning, setTimerRunning] = useState(false)
   const [timerLabel, setTimerLabel] = useState('Lab Sẵn sàng')
@@ -62,9 +65,31 @@ export default function App() {
   const [totalSec, setTotalSec] = useState(0)
   const reduced = usePrefersReducedMotion()
   const touchStart = useRef<{ x: number; y: number } | null>(null)
+  const warnedRef = useRef(false)
+  const zeroedRef = useRef(false)
+  const prevIndex = useRef(0)
 
   const current = slides[index]
   const total = slides.length
+
+  useEffect(() => {
+    loadPrefs()
+    setSfxOn(!isSfxMuted())
+  }, [])
+
+  useEffect(() => {
+    setReducedMotion(reduced)
+    if (reduced) {
+      stopMusic()
+      setMusicOn(false)
+    }
+  }, [reduced])
+
+  useEffect(() => {
+    const onVis = () => onVisibilityChange()
+    document.addEventListener('visibilitychange', onVis)
+    return () => document.removeEventListener('visibilitychange', onVis)
+  }, [])
 
   const go = useCallback(
     (next: number) => {
@@ -88,12 +113,23 @@ export default function App() {
     setRemainSec(minutes * 60)
     setTimerLabel(label)
     setTimerRunning(true)
+    warnedRef.current = false
+    zeroedRef.current = false
+    playSfx('chime')
   }, [])
 
   const kickoffLab = useCallback(() => {
+    playSfx('kickoff')
     goToCp('0')
     startCpTimer('0', 15, 'CP0: Đọc bài mẫu')
   }, [goToCp, startCpTimer])
+
+  useEffect(() => {
+    if (index !== prevIndex.current) {
+      playSfx('whoosh')
+      prevIndex.current = index
+    }
+  }, [index])
 
   useEffect(() => {
     const slide = slides[index]
@@ -111,6 +147,24 @@ export default function App() {
     const id = window.setInterval(() => setRemainSec((s) => s - 1), 1000)
     return () => window.clearInterval(id)
   }, [timerRunning])
+
+  useEffect(() => {
+    if (remainSec === 120 && timerRunning && !warnedRef.current) {
+      warnedRef.current = true
+      playSfx('warn')
+    }
+    if (remainSec === 0 && timerRunning && !zeroedRef.current) {
+      zeroedRef.current = true
+      playSfx('zero')
+    }
+  }, [remainSec, timerRunning])
+
+  const handleToggleSfx = () => {
+    const next = !sfxOn
+    setSfxOn(next)
+    setSfxMuted(!next)
+    if (next) playSfx('tick')
+  }
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -142,18 +196,22 @@ export default function App() {
           e.preventDefault()
           setNotesOpen((v) => !v)
           break
-        case 'c':
-        case 'C':
+        case 'm':
+        case 'M':
           e.preventDefault()
-          setBuddiesOn((v) => {
-            const next = !v
-            try {
-              localStorage.setItem('deck_buddies_off', next ? 'false' : 'true')
-            } catch {
-              /* ignore */
-            }
-            return next
-          })
+          handleToggleSfx()
+          break
+        case 'b':
+        case 'B':
+          e.preventDefault()
+          if (reduced) return
+          if (musicOn) {
+            stopMusic()
+            setMusicOn(false)
+          } else {
+            startMusic()
+            setMusicOn(true)
+          }
           break
         case 'p':
         case 'P':
@@ -164,6 +222,8 @@ export default function App() {
         case 'R':
           e.preventDefault()
           setRemainSec(totalSec)
+          warnedRef.current = false
+          zeroedRef.current = false
           break
         case 'f':
         case 'F':
@@ -180,20 +240,19 @@ export default function App() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [go, index, total, totalSec])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- intentional key handler deps
+  }, [go, index, total, totalSec, musicOn, reduced, sfxOn])
 
   useEffect(() => {
     const onMove = (e: PointerEvent) => {
-      const nx = (e.clientX / window.innerWidth) * 2 - 1
-      const ny = -((e.clientY / window.innerHeight) * 2 - 1)
-      setPointer({ x: nx, y: ny })
       setSpot({ x: `${e.clientX}px`, y: `${e.clientY}px` })
+      document.documentElement.style.setProperty('--spot-x', `${e.clientX}px`)
+      document.documentElement.style.setProperty('--spot-y', `${e.clientY}px`)
     }
     window.addEventListener('pointermove', onMove, { passive: true })
     return () => window.removeEventListener('pointermove', onMove)
   }, [])
 
-  // Expose kickoff for inline HTML button
   useEffect(() => {
     ;(window as unknown as { kickoffLab?: () => void }).kickoffLab = kickoffLab
     ;(window as unknown as { goToCP?: (cp: number | string) => void }).goToCP = goToCp
@@ -220,17 +279,21 @@ export default function App() {
     .filter(Boolean)
     .join(' ')
 
-  const showBuddies = buddiesOn && !reduced
-
   return (
     <>
+      <div className="ambient-bg" aria-hidden="true" />
+      {!reduced && (
+        <div
+          className="cursor-spotlight"
+          style={{ left: spot.x, top: spot.y } as CSSProperties}
+        />
+      )}
+
       <header className="deck-header">
         <div className="brand-meta">
           <span>K5 · L3 · Day 02</span>
           <span className="brand-badge">Discovery &amp; Problem Framing</span>
-          <span className="brand-badge" style={{ background: '#e0f2fe', color: '#0369a1' }}>
-            React + Three.js
-          </span>
+          <span className="brand-badge brand-badge-sky">React</span>
         </div>
 
         <nav className="cp-timeline-rail" aria-label="Checkpoint Timeline">
@@ -266,7 +329,15 @@ export default function App() {
             <button className="btn-icon" onClick={() => setTimerRunning((v) => !v)} title="Pause/Resume (P)">
               ⏯ P
             </button>
-            <button className="btn-icon" onClick={() => setRemainSec(totalSec)} title="Reset (R)">
+            <button
+              className="btn-icon"
+              onClick={() => {
+                setRemainSec(totalSec)
+                warnedRef.current = false
+                zeroedRef.current = false
+              }}
+              title="Reset (R)"
+            >
               ↺ R
             </button>
           </div>
@@ -274,21 +345,28 @@ export default function App() {
 
         <div className="header-actions">
           <button
-            className={`btn-icon${buddiesOn ? ' active' : ''}`}
-            onClick={() => {
-              setBuddiesOn((v) => {
-                const next = !v
-                try {
-                  localStorage.setItem('deck_buddies_off', next ? 'false' : 'true')
-                } catch {
-                  /* ignore */
-                }
-                return next
-              })
-            }}
-            title="Bật/Tắt mascot 3D (C)"
+            className={`btn-icon${sfxOn ? ' active' : ''}`}
+            onClick={handleToggleSfx}
+            title="SFX (M)"
           >
-            {buddiesOn ? '🐱' : '🙈'} Cute3D
+            {sfxOn ? '🔊' : '🔇'} SFX
+          </button>
+          <button
+            className={`btn-icon${musicOn ? ' active' : ''}`}
+            onClick={() => {
+              if (reduced) return
+              if (musicOn) {
+                stopMusic()
+                setMusicOn(false)
+              } else {
+                startMusic()
+                setMusicOn(true)
+              }
+            }}
+            title="Nhạc ambient (B)"
+            disabled={reduced}
+          >
+            {musicOn ? '🎶' : '🎵'} Nhạc
           </button>
           <button className="btn-icon" onClick={() => setNotesOpen((v) => !v)} title="Notes (N)">
             📝 Notes
@@ -374,30 +452,6 @@ export default function App() {
           }}
         />
       </aside>
-
-      {showBuddies && (
-        <div
-          className="cursor-spotlight"
-          style={
-            {
-              position: 'fixed',
-              width: 420,
-              height: 420,
-              borderRadius: '50%',
-              transform: 'translate(-50%, -50%)',
-              left: spot.x,
-              top: spot.y,
-              background:
-                'radial-gradient(circle, rgba(14,165,233,0.16) 0%, rgba(20,184,166,0.08) 35%, transparent 70%)',
-              mixBlendMode: 'multiply',
-              pointerEvents: 'none',
-              zIndex: 35,
-            } as CSSProperties
-          }
-        />
-      )}
-
-      <BuddyScene pointer={pointer} visible={showBuddies} />
     </>
   )
 }

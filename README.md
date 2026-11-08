@@ -1,16 +1,10 @@
-# K5 Day 02 — Instructor Slides (React + Three.js)
+# K5 Day 02 — Instructor Slides (React)
 
-Deck giảng viên **Discovery & Problem Framing** (VinUni K5 · L3).
+Deck giảng viên **Discovery & Problem Framing** — Vite + React, không mascot.
 
 ## Live
 
 https://sagitakdx.github.io/k5-day02-instructor-slides/
-
-## Stack
-
-- **Vite + React + TypeScript**
-- **Three.js** via `@react-three/fiber` + `@react-three/drei`
-- Font tiếng Việt: **Be Vietnam Pro**
 
 ## Dev
 
@@ -20,22 +14,23 @@ npm install
 npm run dev
 ```
 
-## Build / deploy Pages
+## Build (GitHub Pages subpath)
 
 ```bash
 cd app
 npm run build
-# copy app/dist → SagitaKDX.github.io/k5-day02-instructor-slides/
+# output: app/dist → copy vào SagitaKDX.github.io/k5-day02-instructor-slides/
 ```
 
-## Present
+## Phím tắt
 
 | Phím | Việc |
 |------|------|
-| `←` `→` / Space | Đổi slide |
-| `C` | Bật/tắt mascot 3D (mèo + robot focus) |
-| `N` | Speaker notes |
-| `P` / `R` | Pause / reset timer |
-| `F` | Fullscreen |
+| ← → / Space | Đổi slide |
+| P / R | Pause / Reset timer |
+| M | SFX |
+| B | Nhạc ambient |
+| N | Speaker notes |
+| F | Fullscreen |
 
-Di chuột: spotlight + mắt mèo/robot theo con trỏ; hover card có shine.
+SFX + nhạc mặc định **tắt** — bật khi present. `prefers-reduced-motion` tắt animation/nhạc.

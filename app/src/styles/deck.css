@@ -12,33 +12,47 @@ html, body, #root {
   background-attachment: fixed;
   font-family: var(--font-body);
   color: var(--text);
+  position: relative;
 }
-.buddy-canvas-wrap {
+
+.ambient-bg {
   position: fixed;
-  right: 0;
-  bottom: 0;
-  width: min(340px, 42vw);
-  height: min(420px, 55vh);
-  z-index: 50;
+  inset: 0;
+  z-index: 0;
   pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 55% at 12% -10%, rgba(125, 211, 252, 0.35), transparent 55%),
+    radial-gradient(ellipse 70% 50% at 92% 110%, rgba(94, 234, 212, 0.28), transparent 50%),
+    radial-gradient(ellipse 50% 40% at 70% 20%, rgba(165, 243, 252, 0.18), transparent 60%);
+  animation: ambientDrift 18s ease-in-out infinite alternate;
 }
-.buddy-canvas-wrap canvas {
-  pointer-events: auto;
-  touch-action: none;
+
+@keyframes ambientDrift {
+  from { transform: scale(1) translate(0, 0); }
+  to { transform: scale(1.04) translate(-1.5%, 1%); }
 }
-.buddy-toggle-hint {
+
+.cursor-spotlight {
   position: fixed;
-  right: 1rem;
-  bottom: 3.4rem;
-  z-index: 60;
-  pointer-events: auto;
+  width: 460px;
+  height: 460px;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle, rgba(14, 165, 233, 0.14) 0%, rgba(20, 184, 166, 0.07) 38%, transparent 70%);
+  mix-blend-mode: multiply;
+  pointer-events: none;
+  z-index: 5;
+  will-change: left, top;
+}
+
+.brand-badge-sky {
+  background: #e0f2fe !important;
+  color: #0369a1 !important;
 }
 
     :root {
       --bg: #f8fafc;
-      --bg-accent-wash: radial-gradient(ellipse at 15% 0%, #e0f2fe 0%, transparent 45%),
-                        radial-gradient(ellipse at 85% 100%, #ccfbf1 0%, transparent 45%),
-                        #f8fafc;
+      --bg-accent-wash: #f8fafc;
       --surface: #ffffff;
       --surface-subtle: #f1f5f9;
       --text: #0f172a;
@@ -92,15 +106,17 @@ html, body, #root {
     /* Top persistent header / CP Rail */
     header.deck-header {
       height: 58px;
-      border-bottom: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(203, 213, 225, 0.85);
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(16px) saturate(1.2);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 1.5rem;
       z-index: 100;
       gap: 1rem;
+      box-shadow: 0 1px 0 rgba(255,255,255,0.7) inset, 0 8px 24px rgba(15, 23, 42, 0.04);
+      position: relative;
     }
 
     .brand-meta {
@@ -319,6 +335,7 @@ html, body, #root {
       width: 100%;
       height: calc(100vh - 108px);
       overflow: hidden;
+      z-index: 10;
     }
 
     /* Individual Slide */
@@ -490,15 +507,38 @@ html, body, #root {
     .grid-4 { grid-template-columns: repeat(4, 1fr); }
 
     .slide-card {
-      background: var(--surface);
+      background: rgba(255, 255, 255, 0.92);
       border: 1px solid var(--line-subtle);
-      border-radius: 12px;
+      border-radius: 14px;
       padding: 1.1rem 1.35rem;
       box-shadow: 0 4px 14px rgba(15, 23, 42, 0.035);
       display: flex;
       flex-direction: column;
       gap: 0.5rem;
       position: relative;
+      overflow: hidden;
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+    }
+
+    .slide-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.55) 48%, transparent 62%);
+      transform: translateX(-130%);
+      transition: transform 0.55s ease;
+      pointer-events: none;
+    }
+
+    .slide.active .slide-card:hover {
+      transform: translateY(-5px) scale(1.012);
+      box-shadow: 0 16px 32px rgba(15, 23, 42, 0.1);
+      border-color: #99f6e4;
+      z-index: 2;
+    }
+
+    .slide.active .slide-card:hover::after {
+      transform: translateX(130%);
     }
 
     .slide-card.accent-border { border-left: 4px solid var(--accent); }
@@ -516,7 +556,7 @@ html, body, #root {
       gap: 0.45rem;
     }
 
-    .card-#root, body {
+    .card-body {
       color: #334155;
       font-size: var(--fs-body);
       line-height: var(--lh-body);
@@ -695,13 +735,15 @@ html, body, #root {
     /* Deck Footer */
     footer.deck-footer {
       height: 50px;
-      border-top: 1px solid var(--line);
-      background: rgba(255, 255, 255, 0.94);
+      border-top: 1px solid rgba(203, 213, 225, 0.85);
+      background: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(14px);
       display: flex;
       align-items: center;
       justify-content: space-between;
       padding: 0 1.75rem;
       z-index: 90;
+      position: relative;
     }
 
     .slide-counter {
@@ -907,8 +949,11 @@ html, body, #root {
       .slide.active .slide-card:hover {
         transform: none !important;
       }
-      .buddy-canvas-wrap,
-      .cursor-spotlight {
+      .cursor-spotlight,
+      .ambient-bg {
+        display: none !important;
+      }
+      .slide-card::after {
         display: none !important;
       }
     }
