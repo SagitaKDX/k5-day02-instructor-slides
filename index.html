@@ -845,6 +845,368 @@
     }
 
     /* Accessibility / reduced motion */
+    /* ===== Cute engage layer: spotlight + cat + focus robot ===== */
+    #engage-layer {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      z-index: 40;
+    }
+
+    .cursor-spotlight {
+      position: fixed;
+      width: 420px;
+      height: 420px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      left: var(--spot-x, 50%);
+      top: var(--spot-y, 40%);
+      background: radial-gradient(circle, rgba(14, 165, 233, 0.16) 0%, rgba(20, 184, 166, 0.08) 35%, transparent 70%);
+      mix-blend-mode: multiply;
+      opacity: 0.85;
+      transition: opacity 0.25s ease;
+      will-change: left, top;
+    }
+
+    .buddy-dock {
+      position: fixed;
+      right: 1.1rem;
+      bottom: 3.6rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      z-index: 45;
+      pointer-events: auto;
+    }
+
+    .buddy {
+      position: relative;
+      width: 78px;
+      height: 78px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid var(--line);
+      box-shadow: 0 10px 28px rgba(15, 23, 42, 0.12);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+      transform: translate3d(calc(var(--buddy-tx, 0) * 1px), calc(var(--buddy-ty, 0) * 1px), 0) rotate(calc(var(--buddy-rot, 0) * 1deg));
+    }
+
+    .buddy:hover {
+      transform: translate3d(calc(var(--buddy-tx, 0) * 1px), calc(var(--buddy-ty, 0) * 1px - 4px), 0) scale(1.08) rotate(calc(var(--buddy-rot, 0) * 1deg));
+      box-shadow: 0 16px 36px rgba(15, 23, 42, 0.18);
+    }
+
+    .buddy .speech {
+      position: absolute;
+      right: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%) translateX(6px);
+      background: #0f172a;
+      color: #f8fafc;
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 0.4rem 0.65rem;
+      border-radius: 10px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease, transform 0.2s ease;
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.2);
+    }
+
+    .buddy .speech::after {
+      content: "";
+      position: absolute;
+      right: -5px;
+      top: 50%;
+      width: 10px;
+      height: 10px;
+      background: #0f172a;
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    .buddy:hover .speech,
+    .buddy.waving .speech {
+      opacity: 1;
+      transform: translateY(-50%) translateX(0);
+    }
+
+    .buddy-face {
+      width: 56px;
+      height: 56px;
+      position: relative;
+    }
+
+    .buddy-eye {
+      position: absolute;
+      width: 12px;
+      height: 14px;
+      background: #fff;
+      border: 2px solid #0f172a;
+      border-radius: 50%;
+      top: 18px;
+      overflow: hidden;
+    }
+
+    .buddy-eye.left { left: 12px; }
+    .buddy-eye.right { right: 12px; }
+
+    .buddy-pupil {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #0f172a;
+      top: 50%;
+      left: 50%;
+      transform: translate(calc(-50% + var(--eye-x, 0) * 1px), calc(-50% + var(--eye-y, 0) * 1px));
+      transition: transform 0.08s linear;
+    }
+
+    /* Cat */
+    .buddy.cat .cat-body {
+      width: 46px;
+      height: 38px;
+      background: linear-gradient(180deg, #fdba74, #fb923c);
+      border-radius: 40% 40% 35% 35%;
+      position: absolute;
+      left: 5px;
+      top: 14px;
+      animation: catBob 2.4s ease-in-out infinite;
+    }
+
+    .buddy.cat .cat-ear {
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-left: 8px solid transparent;
+      border-right: 8px solid transparent;
+      border-bottom: 14px solid #fb923c;
+      top: 4px;
+    }
+
+    .buddy.cat .cat-ear.left { left: 8px; transform: rotate(-18deg); }
+    .buddy.cat .cat-ear.right { right: 8px; transform: rotate(18deg); }
+    .buddy.cat .cat-ear::after {
+      content: "";
+      position: absolute;
+      left: -4px;
+      top: 4px;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-bottom: 8px solid #fecaca;
+    }
+
+    .buddy.cat .cat-nose {
+      position: absolute;
+      width: 6px;
+      height: 4px;
+      background: #fb7185;
+      border-radius: 50%;
+      left: 50%;
+      top: 34px;
+      transform: translateX(-50%);
+      z-index: 2;
+    }
+
+    .buddy.cat .cat-whisker {
+      position: absolute;
+      width: 14px;
+      height: 1.5px;
+      background: #9a3412;
+      top: 36px;
+      opacity: 0.55;
+    }
+
+    .buddy.cat .cat-whisker.w1 { left: 4px; transform: rotate(-12deg); }
+    .buddy.cat .cat-whisker.w2 { left: 4px; top: 39px; transform: rotate(8deg); }
+    .buddy.cat .cat-whisker.w3 { right: 4px; transform: rotate(12deg); }
+    .buddy.cat .cat-whisker.w4 { right: 4px; top: 39px; transform: rotate(-8deg); }
+
+    .buddy.cat .buddy-eye { top: 22px; width: 11px; height: 12px; border-color: #7c2d12; }
+    .buddy.cat .buddy-pupil { background: #431407; }
+
+    @keyframes catBob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
+    }
+
+    /* Focus robot — newsfeed style glow */
+    .buddy.robot {
+      background: linear-gradient(160deg, #ecfeff, #e0f2fe 55%, #f8fafc);
+      border-color: #7dd3fc;
+      overflow: visible;
+    }
+
+    .buddy.robot::before {
+      content: "";
+      position: absolute;
+      inset: -6px;
+      border-radius: 26px;
+      background: conic-gradient(from var(--robot-angle, 0deg), #22d3ee, #38bdf8, #2dd4bf, #22d3ee);
+      opacity: 0.55;
+      z-index: -1;
+      filter: blur(6px);
+      animation: robotAura 4s linear infinite;
+    }
+
+    .buddy.robot .robot-head {
+      width: 44px;
+      height: 36px;
+      background: linear-gradient(180deg, #f0f9ff, #bae6fd);
+      border: 2px solid #0284c7;
+      border-radius: 12px;
+      position: absolute;
+      left: 6px;
+      top: 12px;
+      box-shadow: inset 0 -6px 12px rgba(2, 132, 199, 0.12);
+    }
+
+    .buddy.robot .robot-antenna {
+      position: absolute;
+      width: 3px;
+      height: 10px;
+      background: #0284c7;
+      left: 50%;
+      top: 2px;
+      transform: translateX(-50%);
+      border-radius: 2px;
+    }
+
+    .buddy.robot .robot-antenna::after {
+      content: "";
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f43f5e;
+      left: 50%;
+      top: -6px;
+      transform: translateX(-50%);
+      box-shadow: 0 0 10px #fb7185;
+      animation: antennaBlink 1.6s ease-in-out infinite;
+    }
+
+    .buddy.robot .buddy-eye {
+      top: 10px;
+      width: 13px;
+      height: 13px;
+      background: #082f49;
+      border-color: #0369a1;
+      box-shadow: inset 0 0 0 1px #38bdf8;
+    }
+
+    .buddy.robot .buddy-pupil {
+      width: 5px;
+      height: 5px;
+      background: #7dd3fc;
+      box-shadow: 0 0 8px #22d3ee, 0 0 14px #38bdf8;
+    }
+
+    .buddy.robot .robot-mouth {
+      position: absolute;
+      width: 16px;
+      height: 4px;
+      border-radius: 999px;
+      background: #0369a1;
+      left: 50%;
+      bottom: 6px;
+      transform: translateX(-50%);
+      opacity: 0.75;
+    }
+
+    .buddy.robot.focus-lock .robot-mouth {
+      height: 6px;
+      border-radius: 3px 3px 8px 8px;
+      background: #0ea5e9;
+    }
+
+    @keyframes robotAura {
+      to { --robot-angle: 360deg; }
+    }
+
+    @keyframes antennaBlink {
+      0%, 100% { opacity: 1; transform: translateX(-50%) scale(1); }
+      50% { opacity: 0.45; transform: translateX(-50%) scale(0.85); }
+    }
+
+    @property --robot-angle {
+      syntax: "<angle>";
+      inherits: false;
+      initial-value: 0deg;
+    }
+
+    /* Hover micro-interactions across deck */
+    .slide-card {
+      transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.28s ease, border-color 0.2s ease;
+      overflow: hidden;
+    }
+
+    .slide-card::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(120deg, transparent 30%, rgba(255,255,255,0.55) 48%, transparent 62%);
+      transform: translateX(-120%);
+      transition: transform 0.55s ease;
+      pointer-events: none;
+    }
+
+    .slide.active .slide-card:hover {
+      transform: translateY(-5px) scale(1.015);
+      box-shadow: 0 14px 30px rgba(15, 23, 42, 0.1);
+      border-color: #99f6e4;
+      z-index: 2;
+    }
+
+    .slide.active .slide-card:hover::after {
+      transform: translateX(120%);
+    }
+
+    .badge-pill {
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+    }
+
+    .badge-pill:hover {
+      transform: translateY(-2px) scale(1.04);
+      box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+    }
+
+    .cp-node {
+      transition: transform 0.18s ease, background 0.15s ease, color 0.15s ease, box-shadow 0.18s ease;
+    }
+
+    .cp-node:hover {
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 0 6px 14px rgba(15, 118, 110, 0.18);
+    }
+
+    .btn-icon, .btn-nav, .btn-kickoff {
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn-icon:hover, .btn-nav:hover:not(:disabled) {
+      transform: translateY(-1px);
+    }
+
+    .btn-kickoff:hover {
+      transform: translateY(-2px) scale(1.03);
+    }
+
+    body.buddies-off #engage-layer,
+    body.buddies-off .buddy-dock {
+      display: none !important;
+    }
+
+    @media (max-width: 900px) {
+      .buddy-dock { right: 0.55rem; bottom: 3.2rem; transform: scale(0.88); transform-origin: bottom right; }
+      .cursor-spotlight { width: 280px; height: 280px; opacity: 0.55; }
+      .buddy .speech { display: none; }
+    }
+
     @media (prefers-reduced-motion: reduce) {
       * {
         animation-duration: 0.001ms !important;
@@ -877,6 +1239,15 @@
       }
       #speaker-notes-drawer {
         transition: none !important;
+      }
+      #engage-layer,
+      .buddy-dock,
+      .cursor-spotlight {
+        display: none !important;
+      }
+      .slide-card::after { display: none !important; }
+      .slide.active .slide-card:hover {
+        transform: none !important;
       }
     }
   </style>
@@ -922,6 +1293,9 @@
       </button>
       <button class="btn-icon" id="btn-music-toggle" onclick="toggleMusic()" title="Bật/Tắt nhạc nền Ambient (Phím B)">
         <span id="music-icon">🎵</span> Nhạc
+      </button>
+      <button class="btn-icon" id="btn-buddy-toggle" onclick="toggleBuddies()" title="Bật/Tắt mèo &amp; robot cute (Phím C)">
+        <span id="buddy-icon">🐱</span> Cute
       </button>
       <button class="btn-icon" id="btn-notes-toggle" onclick="toggleSpeakerNotes()" title="Ghi chú giảng viên (Phím N)">
         📝 Notes
@@ -2163,6 +2537,39 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
     </div>
   </aside>
 
+  <!-- Cute engage layer: mouse spotlight + cat + focus robot -->
+  <div id="engage-layer" aria-hidden="true">
+    <div class="cursor-spotlight" id="cursor-spotlight"></div>
+  </div>
+  <div class="buddy-dock" id="buddy-dock">
+    <div class="buddy cat" id="buddy-cat" title="Mèo lab — hover mình đi!">
+      <span class="speech" id="cat-speech">Meow~ scan problem đi!</span>
+      <div class="buddy-face">
+        <span class="cat-ear left"></span>
+        <span class="cat-ear right"></span>
+        <div class="cat-body"></div>
+        <span class="buddy-eye left"><span class="buddy-pupil"></span></span>
+        <span class="buddy-eye right"><span class="buddy-pupil"></span></span>
+        <span class="cat-nose"></span>
+        <span class="cat-whisker w1"></span>
+        <span class="cat-whisker w2"></span>
+        <span class="cat-whisker w3"></span>
+        <span class="cat-whisker w4"></span>
+      </div>
+    </div>
+    <div class="buddy robot" id="buddy-robot" title="Robot focus — mắt theo chuột">
+      <span class="speech" id="robot-speech">Focus mode: ON</span>
+      <div class="buddy-face">
+        <span class="robot-antenna"></span>
+        <div class="robot-head">
+          <span class="buddy-eye left"><span class="buddy-pupil"></span></span>
+          <span class="buddy-eye right"><span class="buddy-pupil"></span></span>
+          <span class="robot-mouth"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Deck Scripts -->
   <script>
     // State
@@ -2916,6 +3323,136 @@ Outcome: Giảm 50% thời gian chuẩn bị trước mỗi buổi thuyết trì
         }
       }
     }, { passive: true });
+
+    // ===== Cute buddies + cursor spotlight (hover / mousemove) =====
+    const buddyCat = document.getElementById("buddy-cat");
+    const buddyRobot = document.getElementById("buddy-robot");
+    const buddyIcon = document.getElementById("buddy-icon");
+    const catSpeech = document.getElementById("cat-speech");
+    const robotSpeech = document.getElementById("robot-speech");
+    const catLines = [
+      "Meow~ Job Story chưa có solution nhé!",
+      "Nhớ Mom Test: hỏi hành vi thật~",
+      "Bottleneck phải chỉ đúng 1 bước!",
+      "Nghỉ tí đi coach, mèo mệt rồi ☕",
+      "Scan rộng rồi mới hội tụ nha!"
+    ];
+    const robotLines = [
+      "Focus lock: theo dõi con trỏ…",
+      "Detecting engagement ↑",
+      "Rule → Workflow → Agent, chậm thôi.",
+      "Metric cần baseline + target.",
+      "Go / Not Yet / No-Go — chọn có lý do."
+    ];
+    let buddiesOn = true;
+    try {
+      buddiesOn = localStorage.getItem("deck_buddies_off") !== "true";
+    } catch (e) {
+      buddiesOn = true;
+    }
+
+    function updateBuddyUI() {
+      document.body.classList.toggle("buddies-off", !buddiesOn);
+      if (buddyIcon) buddyIcon.textContent = buddiesOn ? "🐱" : "🙈";
+    }
+
+    function toggleBuddies() {
+      buddiesOn = !buddiesOn;
+      try {
+        localStorage.setItem("deck_buddies_off", buddiesOn ? "false" : "true");
+      } catch (e) {}
+      updateBuddyUI();
+      if (buddiesOn && typeof playSfx === "function") {
+        try { playSfx("tick"); } catch (e) {}
+      }
+    }
+    updateBuddyUI();
+
+    let pointerX = window.innerWidth * 0.5;
+    let pointerY = window.innerHeight * 0.4;
+    let rafEngage = null;
+
+    function clamp(v, min, max) {
+      return Math.max(min, Math.min(max, v));
+    }
+
+    function updateEngageLayer() {
+      rafEngage = null;
+      if (!buddiesOn) return;
+      if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+      document.documentElement.style.setProperty("--spot-x", pointerX + "px");
+      document.documentElement.style.setProperty("--spot-y", pointerY + "px");
+
+      [buddyCat, buddyRobot].forEach((buddy, idx) => {
+        if (!buddy) return;
+        const rect = buddy.getBoundingClientRect();
+        const cx = rect.left + rect.width / 2;
+        const cy = rect.top + rect.height / 2;
+        const dx = pointerX - cx;
+        const dy = pointerY - cy;
+        const dist = Math.hypot(dx, dy) || 1;
+        const pull = idx === 1 ? 0.018 : 0.012;
+        const tx = clamp(dx * pull, -10, 10);
+        const ty = clamp(dy * pull, -8, 8);
+        const rot = clamp(dx * 0.02, -8, 8);
+        const eyeX = clamp(dx / dist * 3.2, -3.2, 3.2);
+        const eyeY = clamp(dy / dist * 2.6, -2.6, 2.6);
+        buddy.style.setProperty("--buddy-tx", tx.toFixed(2));
+        buddy.style.setProperty("--buddy-ty", ty.toFixed(2));
+        buddy.style.setProperty("--buddy-rot", rot.toFixed(2));
+        buddy.style.setProperty("--eye-x", eyeX.toFixed(2));
+        buddy.style.setProperty("--eye-y", eyeY.toFixed(2));
+      });
+
+      if (buddyRobot) {
+        const near = Math.hypot(
+          pointerX - (buddyRobot.getBoundingClientRect().left + 39),
+          pointerY - (buddyRobot.getBoundingClientRect().top + 39)
+        ) < 140;
+        buddyRobot.classList.toggle("focus-lock", near);
+      }
+    }
+
+    function onPointerMove(e) {
+      const point = e.touches ? e.touches[0] : e;
+      if (!point) return;
+      pointerX = point.clientX;
+      pointerY = point.clientY;
+      if (rafEngage == null) rafEngage = requestAnimationFrame(updateEngageLayer);
+    }
+
+    window.addEventListener("pointermove", onPointerMove, { passive: true });
+    window.addEventListener("touchmove", onPointerMove, { passive: true });
+
+    if (buddyCat) {
+      buddyCat.addEventListener("mouseenter", () => {
+        if (catSpeech) catSpeech.textContent = catLines[Math.floor(Math.random() * catLines.length)];
+        buddyCat.classList.add("waving");
+        if (typeof playSfx === "function" && !isMuted) {
+          try { playSfx("tick"); } catch (e) {}
+        }
+      });
+      buddyCat.addEventListener("mouseleave", () => buddyCat.classList.remove("waving"));
+      buddyCat.addEventListener("click", () => {
+        if (catSpeech) catSpeech.textContent = catLines[Math.floor(Math.random() * catLines.length)];
+        buddyCat.classList.add("waving");
+        setTimeout(() => buddyCat.classList.remove("waving"), 1200);
+      });
+    }
+
+    if (buddyRobot) {
+      buddyRobot.addEventListener("mouseenter", () => {
+        if (robotSpeech) robotSpeech.textContent = robotLines[Math.floor(Math.random() * robotLines.length)];
+        buddyRobot.classList.add("focus-lock");
+        if (typeof playSfx === "function" && !isMuted) {
+          try { playSfx("chime"); } catch (e) {}
+        }
+      });
+      buddyRobot.addEventListener("click", () => {
+        if (robotSpeech) robotSpeech.textContent = robotLines[Math.floor(Math.random() * robotLines.length)];
+      });
+    }
 
     // Initial render
     show(0);
